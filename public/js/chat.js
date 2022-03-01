@@ -12,7 +12,10 @@ const messageTemplate = document.getElementById('message-template').innerHTML;
 const locationTemplate = document.getElementById('location-template').innerHTML;
 
 //Options
-const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true});
+let listQuerySearch = [];
+location.search.split('&').forEach(search => listQuerySearch.push(search.split('=')[1]));
+console.log(listQuerySearch);
+// const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true});
 
 socket.on('message', (message) => {
     const html = Mustache.render(messageTemplate, {
@@ -67,4 +70,4 @@ socket.on('locationMessage', (url) => {
     $chatMessages.insertAdjacentHTML('beforeend', html);
 });
 
-socket.emit('join', { username, room })
+socket.emit('join', { username: listQuerySearch[0], room: listQuerySearch[1] })

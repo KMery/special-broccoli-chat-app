@@ -17,15 +17,19 @@ app.use(express.static(publicDirectoryPath));
 
 io.on('connection', (socket) => {
     console.log('New websocket connection');
-    //Notify users when someone new has joined
-    socket.broadcast.emit('message', generateMessage('A new user has joined!'));
+    //Listen to new user entering  chat
+    socket.emit('join', ({ username, room }) => {
+        socket.join(room);
+        //Notify users when someone new has joined
+        socket.broadcast.to(room).emit('message', generateMessage(`User ${username} has joined!`));
+    });
     //When event is "sendMessage" will emit the message to all connections
     socket.on('sendMessage', (message, callback) => {
         const filter = new Filter();
         if (filter.isProfane(message)) {
             return callback('Profanity is not allowed!');
         };
-        io.emit('message', generateMessage(message));
+        io.to('roomA').emit('message', generateMessage(message));
         callback();
     });
     //When someone disconnect
