@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
+const { generateMessage, generateLocationMessage } = require('./utils/messages');
 
 const app = express();
 const server = http.createServer(app);
@@ -17,7 +18,7 @@ app.use(express.static(publicDirectoryPath));
 io.on('connection', (socket) => {
     console.log('New websocket connection');
     //Notify users when someone new has joined
-    socket.broadcast.emit('message', 'A new user has joined!');
+    socket.broadcast.emit('message', generateMessage('A new user has joined!'));
     //When event is "sendMessage" will emit the message to all connections
     socket.on('sendMessage', (message, callback) => {
         const filter = new Filter();
@@ -30,11 +31,11 @@ io.on('connection', (socket) => {
     });
     //When someone disconnect
     socket.on('disconnect', () => {
-        io.emit('message', 'A user has left!')
+        io.emit('message', generateMessage('A user has left!'));
     });
     //Listen "sendLocation"
     socket.on('sendLocation', (coords, callback) => {
-        io.emit('message', `https://google.com/maps?q=${coords.latitude},${coords.longitude}`);
+        io.emit('locationMessage', generateLocationMessage(`https://google.com/maps?q=${coords.latitude},${coords.longitude}`));
         callback();
     });
 });

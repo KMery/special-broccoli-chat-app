@@ -5,9 +5,18 @@ const $messageForm = document.querySelector('#message-form');
 const $messageFormInputMessage = $messageForm.querySelector('#message');
 const $messageFormButtonSendMessage = $messageForm.querySelector('#send-message');
 const $locationButton = document.getElementById('send-location');
+const $chatMessages = document.getElementById('chat-messages');
+
+//Templates
+const messageTemplate = document.getElementById('message-template').innerHTML;
+const locationTemplate = document.getElementById('location-template').innerHTML;
 
 socket.on('message', (message) => {
-    console.log(message);
+    const html = Mustache.render(messageTemplate, {
+        message: message.text,
+        createdAt: moment(message.createdAt).format('HH:mm')
+    });
+    $chatMessages.insertAdjacentHTML('beforeend', html);
 });
 
 $messageForm.addEventListener('submit', (e) => {
@@ -44,4 +53,13 @@ $locationButton.addEventListener('click', () => {
             $locationButton.removeAttribute('disabled');
         });
     });
+});
+
+socket.on('locationMessage', (url) => {
+    console.log(url);
+    const html = Mustache.render(locationTemplate, {
+        url: url.url,
+        createdAt: moment(url.createdAt).format('HH:mm')
+    });
+    $chatMessages.insertAdjacentHTML('beforeend', html);
 });
