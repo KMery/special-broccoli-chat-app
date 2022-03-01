@@ -11,6 +11,9 @@ const $chatMessages = document.getElementById('chat-messages');
 const messageTemplate = document.getElementById('message-template').innerHTML;
 const locationTemplate = document.getElementById('location-template').innerHTML;
 
+//Options
+const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true});
+
 socket.on('message', (message) => {
     const html = Mustache.render(messageTemplate, {
         message: message.text,
@@ -63,3 +66,5 @@ socket.on('locationMessage', (url) => {
     });
     $chatMessages.insertAdjacentHTML('beforeend', html);
 });
+
+socket.emit('join', { username, room })

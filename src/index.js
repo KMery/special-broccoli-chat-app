@@ -25,8 +25,7 @@ io.on('connection', (socket) => {
         if (filter.isProfane(message)) {
             return callback('Profanity is not allowed!');
         };
-
-        io.emit('message', message);
+        io.emit('message', generateMessage(message));
         callback();
     });
     //When someone disconnect
