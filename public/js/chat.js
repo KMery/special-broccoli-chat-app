@@ -10,15 +10,18 @@ const $chatMessages = document.getElementById('chat-messages');
 //Templates
 const messageTemplate = document.getElementById('message-template').innerHTML;
 const locationTemplate = document.getElementById('location-template').innerHTML;
+const sidebarTemplate = document.getElementById('sidebar-template').innerHTML;
 
 //Options
 let listQuerySearch = [];
 location.search.split('&').forEach(search => listQuerySearch.push(search.split('=')[1]));
-console.log(listQuerySearch);
+// console.log('listQuerySearch', listQuerySearch);
 // const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true});
 
 socket.on('message', (message) => {
+    console.log('message:', message);
     const html = Mustache.render(messageTemplate, {
+        username: message.username,
         message: message.text,
         createdAt: moment(message.createdAt).format('HH:mm')
     });
@@ -31,7 +34,6 @@ $messageForm.addEventListener('submit', (e) => {
     $messageFormButtonSendMessage.setAttribute('disabled', 'disabled');
 
     const message = e.target.elements.message.value;
-
     socket.emit('sendMessage', message, (err) => {
         //Cleanning input message
         $messageFormButtonSendMessage.removeAttribute('disabled');
@@ -64,10 +66,29 @@ $locationButton.addEventListener('click', () => {
 socket.on('locationMessage', (url) => {
     console.log(url);
     const html = Mustache.render(locationTemplate, {
+        username: url.username,
         url: url.url,
         createdAt: moment(url.createdAt).format('HH:mm')
     });
     $chatMessages.insertAdjacentHTML('beforeend', html);
 });
 
-socket.emit('join', { username: listQuerySearch[0], room: listQuerySearch[1] })
+const username = listQuerySearch[0];
+const room = listQuerySearch[1];
+console.log('username', username);
+console.log('room', room);
+socket.emit('join', { username, room }, (error) => {
+    console.log('\nchat userOp', username, room);
+    if (error) {
+        alert(error);
+        location.href = '/';
+    };
+});
+
+socket.on('roomData', ({ room, users }) => {
+    const html = Mustache.render(sidebarTemplate, {
+        room,
+        users
+    });
+    document.getElementById('sidebar').innerHTML = html;
+});

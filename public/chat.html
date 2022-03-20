@@ -12,7 +12,7 @@
 <body>
     
     <div class="d-flex flex-row justify-content-stretch">
-        <div id="user-list" class="float-left bg-black mh-100 w-25 p-3"></div>
+        <div id="sidebar" class="float-left bg-black mh-100 w-25 p-3"></div>
     
         <div class="card d-flex">
             <h1 class="card-title text-center text-success mb-3">Chat app</h1>
@@ -36,7 +36,7 @@
     <script id="message-template" type="text/html">
         <div class="card p-3">
             <p class="bg-light">
-                <span class="font-weight-bold">Some user name</span>
+                <span class="font-weight-bold">{{username}}</span>
                 <span class="text-muted">{{createdAt}}</span>
             </p>
             <p class="text-justify font-weight-light">{{message}}</p>
@@ -46,11 +46,21 @@
     <script id="location-template" type="text/html">
         <div class="card p-3">
             <p class="bg-light">
-                <span class="font-weight-bold">Some user name</span>
+                <span class="font-weight-bold">{{username}}</span>
                 <span class="text-muted">{{createdAt}}</span>
             </p>
             <p><a href="{{url}}" target="_blank">My current location</a></p>
         </div>
+    </script>
+
+    <script id="sidebar-template" type="text/html">
+        <h2>{{room}}</h2>
+        <h3>Users</h3>
+        <ul>
+            {{#users}}
+                <li>{{username}}</li>
+            {{/users}}
+        </ul>
     </script>
 
     <script src="/socket.io/socket.io.js"></script>
