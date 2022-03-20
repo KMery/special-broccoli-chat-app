@@ -13,19 +13,36 @@ const locationTemplate = document.getElementById('location-template').innerHTML;
 const sidebarTemplate = document.getElementById('sidebar-template').innerHTML;
 
 //Options
+//Get the username and room from the "location.search"
+// const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true}); --> Qs not working!
 let listQuerySearch = [];
 location.search.split('&').forEach(search => listQuerySearch.push(search.split('=')[1]));
-// console.log('listQuerySearch', listQuerySearch);
-// const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true});
+const autoscroll = () => {
+    //get height and margin from message
+    const $newMessage = $chatMessages.lastElementChild;
+    const newMessageStyles = getComputedStyle($newMessage);
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom);
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
+    //Make visible height
+    const visibleHeight = $chatMessages.offsetHeight;
+    //Height of messages container
+    const containerHeight = $chatMessages.scrollHeight;
+    //How far have I scrolled?
+    const scrollOffset = $chatMessages.scrollTop + visibleHeight;
+
+    if (containerHeight - newMessageHeight <= scrollOffset) {
+        $chatMessages.scrollTop = $chatMessages.scrollHeight;
+    };
+};
 
 socket.on('message', (message) => {
-    console.log('message:', message);
     const html = Mustache.render(messageTemplate, {
         username: message.username,
         message: message.text,
         createdAt: moment(message.createdAt).format('HH:mm')
     });
     $chatMessages.insertAdjacentHTML('beforeend', html);
+    autoscroll();
 });
 
 $messageForm.addEventListener('submit', (e) => {
@@ -64,21 +81,18 @@ $locationButton.addEventListener('click', () => {
 });
 
 socket.on('locationMessage', (url) => {
-    console.log(url);
     const html = Mustache.render(locationTemplate, {
         username: url.username,
         url: url.url,
         createdAt: moment(url.createdAt).format('HH:mm')
     });
     $chatMessages.insertAdjacentHTML('beforeend', html);
+    autoscroll();
 });
 
 const username = listQuerySearch[0];
 const room = listQuerySearch[1];
-console.log('username', username);
-console.log('room', room);
 socket.emit('join', { username, room }, (error) => {
-    console.log('\nchat userOp', username, room);
     if (error) {
         alert(error);
         location.href = '/';

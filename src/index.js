@@ -17,10 +17,8 @@ const publicDirectoryPath = path.join(__dirname, '../public');
 app.use(express.static(publicDirectoryPath));
 
 io.on('connection', (socket) => {
-    console.log('New websocket connection');
     //Listen to new user entering  chat
     socket.on('join', (userOptions, callback) => {//userOptions has "user" and "room"
-        console.log('\njoin userOptions', userOptions);
         const { error, user } = addUser({ id: socket.id, ...userOptions });
         if (error) {
             return callback(error);
@@ -36,13 +34,11 @@ io.on('connection', (socket) => {
     });
     //When event is "sendMessage" will emit the message to all connections
     socket.on('sendMessage', (message, callback) => {
-        console.log('\nIn index sendMessage:', message);
         const filter = new Filter();
         if (filter.isProfane(message)) {
             return callback('Profanity is not allowed!');
         };
         const user = getUser(socket.id);
-        console.log('\nsendMessage user', user);
         io.to(user.room).emit('message', generateMessage(user.username, message));
         callback();
     });

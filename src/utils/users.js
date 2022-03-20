@@ -1,7 +1,6 @@
 const users = [];
-console.log('\nUsers js file working!');
+
 const addUser = ({id, username, room}) => {
-    console.log('\naddUser', {id, username, room});
     //Clean data
     username = username.trim().toLowerCase();
     room = room.trim().toLowerCase();
@@ -27,7 +26,6 @@ const addUser = ({id, username, room}) => {
 
     //Store user
     const user = { id, username, room };
-    console.log(user);
     users.push(user);
     return { user };
 };
@@ -40,7 +38,6 @@ const removeUser = (id) => {
 };
 
 const getUser = (id) => {
-    console.log(users);
     return users.find((user) => user.id === id);
 };
 
@@ -48,8 +45,6 @@ const getUsersInRoom = (room) => {
     room = room.trim().toLowerCase();
     return users.filter((user) => user.room === room);
 };
-
-console.log('\nusers file get all', users);
 
 module.exports = {
     addUser,
