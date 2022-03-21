@@ -1,0 +1,79 @@
+.centered-form {
+    width: 100vw;
+    height: 100vh;   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#broccoli {
+    position: absolute;
+    filter: blur(0.25rem);
+    transform: rotate(45deg);
+    margin-left: 20%;
+    z-index: -1;
+    animation-duration: 3s;
+    animation-name: broccoli-rotate;
+    animation-iteration-count: infinite;
+}
+
+@keyframes broccoli-rotate {
+    from {
+        transform: rotate(45deg);
+    }
+    25% {
+        filter: blur(0.2rem);
+    }
+    50% {
+        transform: rotate(40deg);
+    }
+    75% {
+        filter: blur(0.2rem);
+    }
+    to {
+        transform: rotate(45deg);
+    }
+}
+
+footer {
+    bottom: 0;
+    text-align: end;
+}
+
+#sidebar {
+    height: 100vh;
+    width: 225px;
+    overflow-y: scroll;
+    position: sticky;
+    top: 0;
+}
+
+#chat-messages {
+    flex-grow: 1;
+    padding: 24px 24px 0 24px;
+    overflow-y: scroll;
+}
+
+#chat, #message-form {
+    width: 100vw;
+    max-height: 100%;
+}
+
+.username {
+    font-weight: 600;
+    font-size: 1em;
+    margin-right: 8px;
+}
+
+#send-location {
+    width: 3em;
+    height: 3em;
+    margin-left: 1em;
+    margin-top: 0.5em;
+}
+
+#send-location:hover {
+    width: 3.1em;
+    height: 3.1em;
+    filter: brightness(1.2);
+}
